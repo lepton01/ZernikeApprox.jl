@@ -1,6 +1,9 @@
 module ZernikeApprox
-
+using LinearAlgebra, Statistics, Random
+using Plots
+using Flux, SpecialFunctions, BSON
 export greet
-include("fun1.jl")
+include("main.jl")
+include("radial.jl")
 
 end
