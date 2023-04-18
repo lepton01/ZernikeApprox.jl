@@ -3,10 +3,11 @@ function greet(s::String)
     println(s)
     s
 end
+
 """
     zernike_first_cart(n::Integer, m::Integer, x, y)
 
-Computes the explicit Zernike polynomials for a given order of n at (x, y).
+Compute the explicit Zernike polynomials for a given order of n at (x, y).
 """
 function zernike_first_cart(n::Integer, m::Integer, x::AbstractFloat, y::AbstractFloat)
     @assert abs(m) ≤ n "m ∉ [-n, n]."
@@ -28,8 +29,11 @@ function zernike_first_cart(n::Integer, m::Integer, x::AbstractFloat, y::Abstrac
     rad_poly = radial(n, m, ρ)
     return norm_f*rad_poly*ang_f
 end
+
 """
     zernike_pol(n, m, ρ, θ)
+
+Compute the explicit Zernike polynomials for a given order of n at (ρ, θ).
 """
 function zernike_pol(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloat)
     @assert ρ ≤ one(ρ) "ρ must be ≤ 1."
@@ -53,6 +57,12 @@ function zernike_pol(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloa
     R = radial(n, m, ρ)
     return norm_f*R*ang_f
 end
+
+"""
+    zernike_rec(n, m, ρ, θ)
+
+Compute the recurrent Zernike polynomials up to the given order. First compute the recurrent coefficient relations, then evaluate at ρ.
+"""
 function zernike_rec(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloat)
     @assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
@@ -69,10 +79,19 @@ function zernike_rec(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloa
     else
         ang_f = -sin(m*θ)
     end
+    if ρ == 1
+        return norm_f*ang_f
+    end
     A = recursive(n, m, n)
     B = [ρ^i for i in 0:n]
-    return A'*B
+    return norm_f*ang_f*(A'*B)
 end
+
+"""
+    recursive()
+
+Computes the polynomial coefficients recursively.
+"""
 function recursive(n::Integer, m::Integer, n_max::Integer)
     V = zeros(Float64, n_max + 1)
     if n == zero(n) && m == zero(m)
