@@ -65,7 +65,7 @@ function zernike_rec(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloa
     B = [ρ^i for i in 0:n + 1]
     return A.*B
 end
-function recursive(n, m, n_max)
+function recursive(n::Integer, m::Integer, n_max::Integer)
     V = zeros(Float64, n_max + 1)
     if n == zero(n) && m == zero(m)
         V[1] = one(m)
