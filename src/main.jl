@@ -69,9 +69,9 @@ function zernike_rec(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloa
     else
         ang_f = -sin(m*θ)
     end
-    A = recursive(n, m, A)
-    B = [ρ^i for i in 0:n + 1]
-    return A.*B
+    A = recursive(n, m, n)
+    B = [ρ^i for i in 0:n]
+    return A'*B
 end
 function recursive(n::Integer, m::Integer, n_max::Integer)
     V = zeros(Float64, n_max + 1)
