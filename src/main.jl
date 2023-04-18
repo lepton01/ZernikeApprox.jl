@@ -3,6 +3,11 @@ function greet(s::String)
     println(s)
     s
 end
+"""
+    zernike_first_cart(n::Integer, m::Integer, x, y)
+
+Computes the explicit Zernike polynomials for a given order of n at (x, y).
+"""
 function zernike_first_cart(n::Integer, m::Integer, x::AbstractFloat, y::AbstractFloat)
     @assert abs(m) ≤ n "m ∉ [-n, n]."
     @assert mod(n - abs(m), 2) ≠ 0.0 "n - abs(m) should be an even number."
@@ -23,6 +28,9 @@ function zernike_first_cart(n::Integer, m::Integer, x::AbstractFloat, y::Abstrac
     rad_poly = radial(n, m, ρ)
     return norm_f*rad_poly*ang_f
 end
+"""
+    zernike_pol(n, m, ρ, θ)
+"""
 function zernike_pol(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloat)
     @assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
@@ -49,7 +57,7 @@ function zernike_rec(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloa
     @assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."
-    @assert mod(n - abs(m), 2) ≠ 0 "n - abs(m) should be an even number."
+    @assert iseven(n - abs(m)) "n - abs(m) should be an even number."
 
     if abs(m) == zero(m)
         norm_f = sqrt(n + one(n))
