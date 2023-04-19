@@ -38,8 +38,8 @@ Compute the explicit Zernike polynomials for a given order of n at (ρ, θ).
 function zernike_pol(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloat)
     @assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
-    @assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."
-    @assert mod(n - abs(m), 2) ≠ 0 "n - abs(m) should be an even number."
+    #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."
+    @assert iseven(n - abs(m)) "n - abs(m) should be an even number."
 
     if abs(m) == zero(m)
         norm_f = sqrt(n + one(n))
