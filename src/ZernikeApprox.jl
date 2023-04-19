@@ -3,6 +3,7 @@ module ZernikeApprox
 export greet
 include("main.jl")
 include("radial.jl")
+include("deps.jl")
 
 end
 using Plots
