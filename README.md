@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/lepton01/ZernikeApprox.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/lepton01/ZernikeApprox.jl/actions/workflows/CI.yml?query=branch%3Amain)
 
-The main goal of this package is the implementation of Artificial Neural Networks to approximate Zernike polynomials `Z_n^m`, replacing the need for computing them recursively. However, this package also contains a recursive zernike coefficients computation, this is used to train the ANN.
+The main goal of this package is the implementation of Artificial Neural Networks to approximate Zernike polynomials `Z_n^m`, replacing the need for computing them recursively. However, this package also contains a recursive zernike coefficients computation, these results are used to train the ANN.
 
 ## Instructions
 
