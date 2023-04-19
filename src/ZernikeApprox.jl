@@ -1,11 +1,11 @@
 module ZernikeApprox
-
 export greet
+include("deps.jl")
 include("main.jl")
 include("radial.jl")
-include("deps.jl")
 
 end
+
 using Plots
 #=
 ρ = LinRange(0, 1, 100)

@@ -11,3 +11,7 @@ To install use Julia's Pkg manager, access it by typing `]` on your environment'
 ## Recursion
 
 The recursion algorithm is based on [Honarvar and Paramesran's work](https://doi.org/10.1364/OL.38.002487), Eq. 18 to be more precise.
+
+## System compatibility
+
+I personally code on Windows 10 64-bit. CI should check for ubuntu compatibility.

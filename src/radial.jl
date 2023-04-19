@@ -25,4 +25,3 @@ function radial_2(n::Int, m::Int, r::AbstractFloat)
     s = sum(N)
     return s
 end
-
