@@ -6,7 +6,7 @@ The main goal of this package is the implementation of Artificial Neural Network
 
 ## Instructions
 
-To install use Julia's Pkg manager, access it by typing `]` on your environment's REPL and then type `add ZernikeApprox`, or alternatively type in your script `using Pkg; Pkg.add("ZernikeApprox")`.
+To install use Julia's Pkg manager, access it by typing `]` on your environment's REPL and then type `add ZernikeApprox`, or alternatively type in your script `using Pkg; Pkg.add("ZernikeApprox")`. Then simply command `using ZernikeApprox` in your script.
 
 ## Recursion
 
