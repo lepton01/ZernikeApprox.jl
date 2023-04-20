@@ -6,6 +6,10 @@ The main goal of this package is the implementation of Artificial Neural Network
 
 ## Instructions
 
+To install the package, you can either clone this repo via git, or use the `]` key in the REPL to acces julia's package manager and type `https://github.com/lepton01/ZernikeApprox.jl` which will download and add the package to the environment.
+
+This package is not registered in the Julia General Registry, so the instructions below are not valid.
+
 To install use Julia's Pkg manager, access it by typing `]` on your environment's REPL and then type `add ZernikeApprox`, or alternatively type in your script `using Pkg; Pkg.add("ZernikeApprox")`. Then simply command `using ZernikeApprox` in your script.
 
 ## Recursion
@@ -14,4 +18,4 @@ The recursion algorithm is based on [Honarvar and Paramesran's work](https://doi
 
 ## System compatibility
 
-I personally code on Windows 10 64-bit. CI should check for ubuntu compatibility.
+CI should check for system compatibility for windows, ubuntu, macOS.
