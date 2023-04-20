@@ -6,7 +6,7 @@ function radial(n::Integer, m::Integer, r::AbstractFloat)
     μ = n - abs(m)
     if iseven(μ)
         for k in 0:Int(μ/2)
-            v = (-1)^k*r^(n - 2k)*factorial(n - k)/(factorial(k)*factorial((n - m)/2 - k)*factorial((n + m)/2 - k))
+            v = (-1)^k*r^(n - 2k)*factorial(n - k)/(factorial(k)*factorial(Int((n - m)/2) - k)*factorial(Int((n + m)/2) - k))
             push!(N, v)
         end
     else
@@ -24,4 +24,27 @@ function radial_2(n::Int, m::Int, r::AbstractFloat)
     end
     s = sum(N)
     return s
+end
+
+"""
+    recursive()
+
+Computes the polynomial coefficients recursively.
+"""
+function recursive(n::Integer, m::Integer, n_max::Integer)
+    V = zeros(Float64, n_max + 1)
+    if n == zero(n) && m == zero(m)
+        V[1] = one(m)
+        return V
+    elseif n < m
+        return V
+    elseif n == m
+        V[m + 1] += one(m)
+        return V
+    end
+
+    left = recursive(n - 1, abs(m - 1), n_max) + recursive(n - 1, m + 1, n_max)
+    left = circshift(left, 1)
+    right = recursive(n - 2, m, n_max)
+    return left - right
 end

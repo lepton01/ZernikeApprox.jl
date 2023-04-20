@@ -52,7 +52,7 @@ function zernike_pol(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloa
         ang_f = -sin(m*θ)
     end
     if n == zero(n) && m == zero(m)
-        return 1.0
+        return one(ρ)
     end
     R = radial(n, m, ρ)
     return norm_f*R*ang_f
@@ -85,27 +85,4 @@ function zernike_rec(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloa
     A = recursive(n, m, n)
     B = [ρ^i for i in 0:n]
     return norm_f*ang_f*(A'*B)
-end
-
-"""
-    recursive()
-
-Computes the polynomial coefficients recursively.
-"""
-function recursive(n::Integer, m::Integer, n_max::Integer)
-    V = zeros(Float64, n_max + 1)
-    if n == zero(n) && m == zero(m)
-        V[1] = one(m)
-        return V
-    elseif n < m
-        return V
-    elseif n == m
-        V[m + 1] += one(m)
-        return V
-    end
-
-    left = recursive(n - 1, abs(m - 1), n_max) + recursive(n - 1, m + 1, n_max)
-    left = circshift(left, 1)
-    right = recursive(n - 2, m, n_max)
-    return left - right
 end
