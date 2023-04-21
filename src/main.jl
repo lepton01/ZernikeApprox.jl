@@ -8,16 +8,21 @@ end
 
 Compute the corresponding normalization factor for the Zernike polynomials.
 """
-norma(n::Integer, m::Integer) = √(2(n + one(n))/(one(n) + Kδ0(m)))
-
-Kδ0(m::Integer) = m == zero(m) ? one(m) : zero(m)
+norma(n::Int, m::Int) = √(2(n + one(n))/(one(n) + Kδ0(m)))
 
 """
-    zernike_first_cart(n::Integer, m::Integer, x, y)
+    Kδ0()
+
+Compute the Kroenecker delta δ(m, 0) = 1 of m == 0.
+"""
+Kδ0(m::Int) = m == zero(m) ? one(m) : zero(m)
+
+"""
+    zernike_first_cart(n::Int, m::Int, x, y)
 
 Compute the explicit Zernike polynomials for a given order of n at (x, y).
 """
-function zernike_first_cart(n::Integer, m::Integer, x::AbstractFloat, y::AbstractFloat)
+function zernike_first_cart(n::Int, m::Int, x::AbstractFloat, y::AbstractFloat)
     @assert abs(m) ≤ n "m ∉ [-n, n]."
     @assert mod(n - abs(m), 2) ≠ 0.0 "n - abs(m) should be an even number."
     @assert √(x^2 + y^2) ≤ one(x) "Outside the unit circle."
@@ -43,7 +48,7 @@ end
 
 Compute the explicit Zernike polynomials for a given order of n at (ρ, θ).
 """
-function zernike_pol(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloat)
+function zernike_pol(n::Int, m::Int, ρ::AbstractFloat, θ::AbstractFloat)
     @assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."
@@ -62,7 +67,7 @@ end
 
 Compute the recurrent Zernike polynomials up to the given order. First compute the recurrent coefficient relations, then evaluate at ρ.
 """
-function zernike_rec(n::Integer, m::Integer, ρ::AbstractFloat, θ::AbstractFloat)
+function zernike_rec(n::Int, m::Int, ρ::AbstractFloat, θ::AbstractFloat)
     @assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."

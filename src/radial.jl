@@ -1,4 +1,4 @@
-function radial(n::Integer, m::Integer, r::AbstractFloat)
+function radial(n::Int, m::Int, r::AbstractFloat)
     r == 1 && return one(r)
     n < m && return zero(r)
     n == zero(n) && return r^m
@@ -31,7 +31,7 @@ end
 
 Computes the polynomial coefficients recursively.
 """
-function recursive(n::Integer, m::Integer, n_max::Integer)
+function recursive(n::Int, m::Int, n_max::Int)
     V = zeros(Float64, n_max + 1)
     if n == zero(n) && m == zero(m)
         V[1] = one(m)
