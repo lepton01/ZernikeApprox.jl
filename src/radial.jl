@@ -6,7 +6,7 @@ function radial(n::Integer, m::Integer, r::AbstractFloat)
     μ = n - abs(m)
     if iseven(μ)
         for k in 0:Int(μ/2)
-            v = (-1)^k*r^(n - 2k)*factorial(n - k)/(factorial(k)*factorial(Int((n - m)/2) - k)*factorial(Int((n + m)/2) - k))
+            v = (-1)^k*r^(n - 2k)*factorial(big(n - k))/(factorial(big(k))*factorial(big(Int((n - m)/2) - k))*factorial(big(Int((n + m)/2) - k)))
             push!(N, v)
         end
     else
@@ -39,7 +39,7 @@ function recursive(n::Integer, m::Integer, n_max::Integer)
     elseif n < m
         return V
     elseif n == m
-        V[m + 1] += one(m)
+        V[abs(m) + 1] += one(m)
         return V
     end
 
