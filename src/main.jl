@@ -58,8 +58,8 @@ function zernike_pol(n::Int, m::Int, ρ::AbstractFloat, θ::AbstractFloat)
     if n == zero(n) && m == zero(m)
         return ang_f*norma(n, m)*one(ρ)
     end
-    R = radial(n, m, ρ)
-    return norma(n, m)*ang_f*R
+    rad_f = radial(n, m, ρ)
+    return norma(n, m)*ang_f*rad_f
 end
 
 """
@@ -74,10 +74,10 @@ function zernike_rec(n::Int, m::Int, ρ::AbstractFloat, θ::AbstractFloat)
     @assert iseven(n - abs(m)) "n - abs(m) should be an even number."
 
     ang_f = m ≥ zero(m) ? cos(m*θ) : -sin(m*θ)
-    if ρ == 1
-        return norma(n, m)*ang_f*one(ρ)
+    if ρ == one(ρ)
+        return Float64(norma(n, m)*ang_f*one(ρ))
     end
-    A = recursive(n, abs(m), n)
-    B = [ρ^i for i in 0:n]
-    return norma(n, m)*ang_f*(A'*B)
+    C = recursive(n, abs(m), n)
+    R = [ρ^i for i in 0:n]
+    return Float64(norma(n, m)*ang_f*(C'*R))
 end
