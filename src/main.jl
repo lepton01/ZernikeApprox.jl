@@ -75,9 +75,9 @@ function zernike_rec(n::Int, m::Int, ρ::AbstractFloat, θ::AbstractFloat)
 
     ang_f = m ≥ zero(m) ? cos(m*θ) : -sin(m*θ)
     if ρ == one(ρ)
-        return Float64(norma(n, m)*ang_f*one(ρ))
+        return norma(n, m)*ang_f*one(ρ)
     end
     C = recursive(n, abs(m), n)
     R = [ρ^i for i in 0:n]
-    return Float64(norma(n, m)*ang_f*(C'*R))
+    return norma(n, m)*ang_f*(C'*R)
 end
