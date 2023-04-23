@@ -25,22 +25,19 @@ Compute the explicit Zernike polynomials for a given order of n at (x, y).
 function zernike_first_cart(n::Int, m::Int, x::AbstractFloat, y::AbstractFloat)
     @assert abs(m) ≤ n "m ∉ [-n, n]."
     @assert mod(n - abs(m), 2) ≠ 0.0 "n - abs(m) should be an even number."
-    @assert √(x^2 + y^2) ≤ one(x) "Outside the unit circle."
+    #@assert √(x^2 + y^2) ≤ one(x) "Outside the unit circle."
 
     ρ = √(x^2 + y^2)
+    if ρ > one(ρ)
+        return zero(ρ)
+    end
     θ = atan(y, x)
-    if abs(m) == zero(m)
-        norm_f = √(n + one(n))
-    else
-        norm_f = √(oftype(n, 2)*(n + one(n)))
+    ang_f = m ≥ zero(m) ? cos(m*θ) : -sin(m*θ)
+    if n == zero(n) && m == zero(m)
+        return ang_f*norma(n, m)*one(ρ)
     end
-    if m ≥ zero(m)  
-        ang_f = cos(m*θ)
-    else
-        ang_f = sin(m*θ)
-    end
-    rad_poly = radial(n, m, ρ)
-    return norm_f*rad_poly*ang_f
+    rad_f = radial(n, m, ρ)
+    return norma(n, m)*ang_f*rad_f
 end
 
 """
@@ -49,11 +46,14 @@ end
 Compute the explicit Zernike polynomials for a given order of n at (ρ, θ).
 """
 function zernike_pol(n::Int, m::Int, ρ::AbstractFloat, θ::AbstractFloat)
-    @assert ρ ≤ one(ρ) "ρ must be ≤ 1."
+    #@assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."
     @assert iseven(n - abs(m)) "n - abs(m) should be an even number."
 
+    if ρ > one(ρ)
+        return zero(ρ)
+    end
     ang_f = m ≥ zero(m) ? cos(m*θ) : -sin(m*θ)
     if n == zero(n) && m == zero(m)
         return ang_f*norma(n, m)*one(ρ)
@@ -68,11 +68,14 @@ end
 Compute the recurrent Zernike polynomials up to the given order. First compute the recurrent coefficient relations, then evaluate at ρ.
 """
 function zernike_rec(n::Int, m::Int, ρ::AbstractFloat, θ::AbstractFloat)
-    @assert ρ ≤ one(ρ) "ρ must be ≤ 1."
+    #@assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."
     @assert iseven(n - abs(m)) "n - abs(m) should be an even number."
 
+    if ρ > one(ρ)
+        return zero(ρ)
+    end
     ang_f = m ≥ zero(m) ? cos(m*θ) : -sin(m*θ)
     if ρ == one(ρ)
         return norma(n, m)*ang_f*one(ρ)
