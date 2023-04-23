@@ -22,7 +22,7 @@ Kδ0(m::Int) = m == zero(m) ? one(m) : zero(m)
 
 Compute the explicit Zernike polynomials for a given order of n at (x, y).
 """
-function zernike_first_cart(n::Int, m::Int, x::AbstractFloat, y::AbstractFloat)
+function zernike_first_cart(n::Int, m::Int, x::Real, y::Real)
     @assert abs(m) ≤ n "m ∉ [-n, n]."
     @assert mod(n - abs(m), 2) ≠ 0.0 "n - abs(m) should be an even number."
     #@assert √(x^2 + y^2) ≤ one(x) "Outside the unit circle."
@@ -45,7 +45,7 @@ end
 
 Compute the explicit Zernike polynomials for a given order of n at (ρ, θ).
 """
-function zernike_pol(n::Int, m::Int, ρ::AbstractFloat, θ::AbstractFloat)
+function zernike_pol(n::Int, m::Int, ρ::Real, θ::Real)
     #@assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."
@@ -67,7 +67,7 @@ end
 
 Compute the recurrent Zernike polynomials up to the given order. First compute the recurrent coefficient relations, then evaluate at ρ.
 """
-function zernike_rec(n::Int, m::Int, ρ::AbstractFloat, θ::AbstractFloat)
+function zernike_rec(n::Int, m::Int, ρ::Real, θ::Real)
     #@assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."

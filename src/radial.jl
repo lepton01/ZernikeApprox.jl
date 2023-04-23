@@ -1,4 +1,4 @@
-function radial(n::Int, m::Int, r::AbstractFloat)
+function radial(n::Int, m::Int, r::Real)
     r == 1 && return one(r)
     n < m && return zero(r)
     n == zero(n) && return r^m
@@ -15,7 +15,7 @@ function radial(n::Int, m::Int, r::AbstractFloat)
     s = sum(N)
     return s
 end
-function radial_2(n::Int, m::Int, r::AbstractFloat)
+function radial_2(n::Int, m::Int, r::Real)
     r == 1 && return one(r)
     N = typeof(r)[]
     for k in 0:n
