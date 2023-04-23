@@ -39,7 +39,7 @@ function recursive(n::Int, m::Int, n_max::Int)
     elseif n < m
         return V
     elseif n == m
-        V[abs(m) + 1] += one(m)
+        V[m + 1] += one(m)
         return V
     end
 
