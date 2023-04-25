@@ -1,8 +1,4 @@
-function greet(s::String)
-    s = "Hello, "*s
-    println(s)
-    s
-end
+#12/04/2023
 """
     norma(n, m)
 
