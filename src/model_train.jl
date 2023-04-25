@@ -54,8 +54,8 @@ function model_train!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat},
         end
         =#
     end
-    N_test = n*rand([0:n], length(N))
-    M_test = m*rand([-n:n], length(N))
+    N_test = rand(0:maximum(N), length(N))
+    M_test = rand(-maximum(N):2:maximum(N), length(N))
     Ρ_test = Float32(ρ)*rand32(length(N))
     Θ_test = Float32(θ)*rand32(length(N))
     X_test = vcat(N_test', M_test', Ρ_test', Θ_test')
@@ -74,8 +74,8 @@ function model_train!(n::Int, ρ::Real, θ::Real, num_L::Int, model_name::String
     loss_log = Float32[]
     for i in 1:ep
         losses = Float32[]
-        n_train = rand([0:n], num_L)
-        m_train = rand([-n:n], num_L)
+        n_train = rand(0:n, num_L)
+        m_train = rand(-n:2:n, num_L)
         ρ_train = Float32(ρ)*rand32(num_L)
         θ_train = Float32(θ)*rand32(num_L)
         Y_train = map(n_train, m_train, ρ_train, θ_train) do h, i, j, k
@@ -106,8 +106,8 @@ function model_train!(n::Int, ρ::Real, θ::Real, num_L::Int, model_name::String
         end
         =#
     end
-    n_test = rand([0:n], num_L)
-    m_test = rand([-n:n], num_L)
+    n_test = rand(0:n, num_L)
+    m_test = rand(-n:2:n, num_L)
     ρ_test = Float32(ρ)*rand32(num_L)
     θ_test = Float32(θ)*rand32(num_L)
     X_test = vcat(n_test', m_test', ρ_test', θ_test')
@@ -174,8 +174,8 @@ function model_train_CPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFlo
         end
         =#
     end
-    N_test = n*rand([0:n], length(N))
-    M_test = m*rand([-n:n], length(N))
+    N_test = rand(0:maximum(N), length(N))
+    M_test = rand(-maximum(N):2:maximum(N), length(N))
     Ρ_test = Float32(ρ)*rand32(length(N))
     Θ_test = Float32(θ)*rand32(length(N))
     X_test = vcat(N_test', M_test', Ρ_test', Θ_test')
@@ -192,8 +192,8 @@ function model_train_CPU!(n::Int, ρ::Real, θ::Real, num_L::Int, model_name::St
     loss_log = Float32[]
     for i in 1:ep
         losses = Float32[]
-        n_train = rand([0:n], num_L)
-        m_train = rand([-n:n], num_L)
+        n_train = rand(0:n, num_L)
+        m_train = rand(-n:n, num_L)
         ρ_train = Float32(ρ)*rand32(num_L)
         θ_train = Float32(θ)*rand32(num_L)
         Y_train = map(n_train, m_train, ρ_train, θ_train) do h, i, j, k
@@ -224,8 +224,8 @@ function model_train_CPU!(n::Int, ρ::Real, θ::Real, num_L::Int, model_name::St
         end
         =#
     end
-    n_test = rand([0:n], num_L)
-    m_test = rand([-n:n], num_L)
+    n_test = rand(0:n, num_L)
+    m_test = rand(-n:2:n, num_L)
     ρ_test = Float32(ρ)*rand32(num_L)
     θ_test = Float32(θ)*rand32(num_L)
     X_test = vcat(n_test', m_test', ρ_test', θ_test')
