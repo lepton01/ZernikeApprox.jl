@@ -1,39 +1,39 @@
 #23/04/2023
+#=
 x_max::Float32 = 50
 y_max::Float32 = 50
-ρ_max = 1.5
-θ_max = 2π
+ρ_max::AbstractFloat = 1.5
+θ_max::AbstractFloat = 2π
 n::Int = 1_000
-
 #model_create(s)
 
-#@time bessel_train!(x_max*rand32(n), a_max*rand32(n), s, 10_000)
+#@time model_train!(x_max*rand32(n), a_max*rand32(n), s, 10_000)
 #@code_warntype bessel_train!(x_max*rand32(n), a_max*rand32(n), s, 10_000)
 
-#@time bessel_train!(x_max, a_max, n, s, 10_000)
+#@time model_train!(x_max, a_max, n, s, 10_000)
 #@code_warntype bessel_train!(x_max, a_max, n, s, 10_000)
 
-#@time bessel_train_cpu!(x_max*rand32(n), a_max*rand32(n), s, 10_000)
+#@time model_train_cpu!(x_max*rand32(n), a_max*rand32(n), s, 10_000)
 #@code_warntype bessel_train_cpu!(x_max*rand32(n), a_max*rand32(n), s, 10_000)
 
-#@time bessel_train!(x_max, a_max, n, s, 10_000)
+#@time model_train!(x_max, a_max, n, s, 10_000)
 #@code_warntype bessel_train!(x_max, a_max, n, s, 10_000)
-
 
 x_test::Float32 = x_max*rand32()
 a_test::Float32 = a_max*rand32()
+=#
 
 """
-    bessel_approx(x, a, model_name)
+    zernike_approx(n, m, ρ, θ, model_name::String)
 
 Approximates the first kind Bessel function centered at ``a`` given ``x``. `model_name` determines the model to use.
 
 Do not include the .bson suffix in `model_name`, as the function already appends it.
 """
-function bessel_approx(x::AbstractFloat, a::AbstractFloat, model_name::String)
+function zernike_approx(n, m, ρ, θ, model_name::String)
     BSON.@load model_name*".bson" model
-    X = Array{Float32}(undef, (2, 1))
-    X[:, 1] = Float32.([x, a])
+    X = Array{Float32}(undef, (4, 1))
+    X[:, 1] = Float32.([n, m, ρ, θ])
     out::Float32 = model(X)[end]
     return out, out - besselj(a, x)
 end
@@ -41,14 +41,14 @@ end
 #@code_warntype bessel_approx(x_test, a_test, s)
 
 """
-    bessel_approx_gpu(x, a, model_name)
+    zernike_approx_gpu(x, a, model_name)
 
-Approximate the first kind Bessel function centered at `a` given `x`. `model_name` determines the model to use.\\
+Approximate the Zernike polynomials with indeces `n`, `m` at `(ρ, θ)`. `model_name` determines the model to use.\\
 Uses CUDA to compute on the GPU.
 
 Do not include the .bson suffix, as the function already appends it.
 """
-function bessel_approx_gpu(x::AbstractFloat, a::AbstractFloat, model_name::String)
+function zernike_approx_gpu(n, m, ρ, θ, model_name::String)
     BSON.@load model_name*".bson" model
     model = model |> gpu
     X = Array{Float32}(undef, (2, 1))

@@ -1,3 +1,8 @@
+"""
+    radial(n::Int, m::Int, r::Real)
+
+Compute the radial function of the Zernike polynomials in explicit form.
+"""
 function radial(n::Int, m::Int, r::Real)
     r == 1 && return one(r)
     n < m && return zero(r)
@@ -27,7 +32,7 @@ function radial_2(n::Int, m::Int, r::Real)
 end
 
 """
-    recursive()
+    recursive(n::Int, m::Int, n_max::Int)
 
 Computes the polynomial coefficients recursively.
 """

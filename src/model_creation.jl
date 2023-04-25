@@ -1,17 +1,16 @@
 #23/04/2023
 """
-    model_create(model_name)
+    model_create(n_in::Int, n_out::Int, model_name::String)
 
-Creation of a NN model to save on file: `model_name.bson`.
-
-Do not add `.bson` to the string input, as the function already does.
+Create a NN model with `n_in` inputs, `n_out` outputs, and its parameters to save on file: `model_name.bson`.
+Do not add `.bson` to the string input.
 """
-function model_create(model_name::String)
+function model_create(n_in::Int, n_out::Int, model_name::String)
     model::Chain = Chain(
-        BatchNorm(2),
-        Dense(2 => 1024, relu),
+        BatchNorm(n_in),
+        Dense(n_in => 1024, relu),
         Dense(1024 => 1024, relu),
-        Dense(1024 => 1)
+        Dense(1024 => n_out)
     )
     BSON.@save model_name*".bson" model
     return

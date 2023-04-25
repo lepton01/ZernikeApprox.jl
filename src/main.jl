@@ -11,9 +11,9 @@ Compute the corresponding normalization factor for the Zernike polynomials.
 norma(n::Int, m::Int) = √(2(n + one(n))/(one(n) + Kδ0(m)))
 
 """
-    Kδ0()
+    Kδ0(m::Int)
 
-Compute the Kroenecker delta δ(m, 0) = 1 of m == 0.
+Compute the Kroenecker delta δ(m, 0) return `1` if m = 0, `0` if m ≠ 0.
 """
 Kδ0(m::Int) = m == zero(m) ? one(m) : zero(m)
 
