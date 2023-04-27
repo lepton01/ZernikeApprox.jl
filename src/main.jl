@@ -63,7 +63,7 @@ end
 
 Compute the recurrent Zernike polynomials up to the given order. First compute the recurrent coefficient relations, then evaluate at ρ.
 """
-function zernikerec(n::Int, m::Int, ρ::Real, θ::Real, DF::Table)
+function zernikerec(n::Int, m::Int, ρ::Real, θ::Real)
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     @assert iseven(n - abs(m)) "n - abs(m) should be an even number."
 
