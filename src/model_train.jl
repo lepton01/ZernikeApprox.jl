@@ -12,7 +12,7 @@ generated to train.
 
 `ep` is the number of epochs to train for.
 """
-function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat}, Θ::Vector{AbstractFloat}, model_name::String, ep::Int = 5_000)
+function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Real}, Θ::Vector{Real}, model_name::String, ep::Int = 5_000)
     @assert N isa Vector "x must be of type Vector for training."
     @assert M isa Vector "x must be of type Vector for training."
     @assert Ρ isa Vector "x must be of type Vector for training."
