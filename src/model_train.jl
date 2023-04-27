@@ -12,7 +12,7 @@ generated to train.
 
 `ep` is the number of epochs to train for.
 """
-function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Real}, Θ::Vector{Real}, model_name::String, ep::Int = 5_000)
+function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector, Θ::Vector, model_name::String, ep::Int = 5_000)
     @assert N isa Vector "x must be of type Vector for training."
     @assert M isa Vector "x must be of type Vector for training."
     @assert Ρ isa Vector "x must be of type Vector for training."
@@ -20,7 +20,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Real}, Θ::Vecto
     @assert length(N) == length(M) && length(Ρ) == length(Θ) && length(Ρ) == length(M) "All vectors supplied must have the same length."
 
     Y_train = map(N, M, Ρ, Θ) do h, i, j, k
-        zernike_rec(h, i, j, k) |> Float32
+        zernikerec(h, i, j, k) |> Float32
     end
     X_train = vcat(N', M', Ρ', Θ')
     train_SET = [(X_train, Y_train')] |> gpu
@@ -65,7 +65,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Real}, Θ::Vecto
     Θ_test = Float32(θ)*rand32(length(N))
     X_test = vcat(N_test', M_test', Ρ_test', Θ_test')
     Y_test = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
-        zernike_rec(h, i, j, k) |> Float32
+        zernikerec(h, i, j, k) |> Float32
     end
     Y_hat::AbstractArray = model(X_test |> gpu) |> cpu
     model = model |> cpu
@@ -84,7 +84,7 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
         ρ_train = Float32(1.5)*rand32(num_L)
         θ_train = Float32(2π)*rand32(num_L)
         Y_train = map(n_train, m_train, ρ_train, θ_train) do ii, iii, iiii, iiiii
-            zernike_rec(ii, iii, iiii, iiiii) |> Float32
+            zernikerec(ii, iii, iiii, iiiii) |> Float32
         end
         X_train = vcat(n_train', m_train', ρ_train', θ_train')
         train_SET = [(X_train, Y_train')] |> gpu
@@ -123,7 +123,7 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
     θ_test = Float32(2π)*rand32(num_L)
     X_test = vcat(n_test', m_test', ρ_test', θ_test')
     Y_test = map(n_test, m_test, ρ_test, θ_test) do h, i, j, k
-        zernike_rec(h, i, j, k) |> Float32
+        zernikerec(h, i, j, k) |> Float32
     end
     Y_hat::AbstractArray = model(X_test |> gpu) |> cpu
     model = model |> cpu
@@ -153,7 +153,7 @@ function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat
     @assert length(N) == length(M) && length(Ρ) == length(Θ) && length(Ρ) == length(M) "All vectors supplied must have the same length."
 
     Y_train = map(N, M, Ρ, Θ) do h, i, j, k
-        zernike_rec(h, i, j, k) |> Float32
+        zernikerec(h, i, j, k) |> Float32
     end
     X_train = vcat(N', M', Ρ', Θ')
     train_SET = [(X_train, Y_train')]
@@ -191,7 +191,7 @@ function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat
     Θ_test = Float32(θ)*rand32(length(N))
     X_test = vcat(N_test', M_test', Ρ_test', Θ_test')
     Y_test = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
-        zernike_rec(h, i, j, k) |> Float32
+        zernikerec(h, i, j, k) |> Float32
     end
     Y_hat::AbstractArray = model(X_test)
     BSON.@save model_name*".bson" model
@@ -208,7 +208,7 @@ function modeltrainCPU!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
         ρ_train = Float32(ρ)*rand32(num_L)
         θ_train = Float32(θ)*rand32(num_L)
         Y_train = map(n_train, m_train, ρ_train, θ_train) do h, i, j, k
-            zernike_rec(h, i, j, k)
+            zernikerec(h, i, j, k)
         end
         X_train = vcat(n_train', m_train', ρ_train', θ_train')
         train_SET = [(X_train, Y_train')]
@@ -241,7 +241,7 @@ function modeltrainCPU!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
     θ_test = Float32(θ)*rand32(num_L)
     X_test = vcat(n_test', m_test', ρ_test', θ_test')
     Y_test = map(n_test, m_test, ρ_test, θ_test) do h, i, j, k
-        zernike_rec(h, i, j, k)
+        zernikerec(h, i, j, k)
     end
     Y_hat::AbstractArray = model(X_test)
     BSON.@save model_name*".bson" model
