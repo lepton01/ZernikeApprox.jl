@@ -187,8 +187,8 @@ function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat
     end
     N_test = rand(0:maximum(N), length(N))
     M_test = rand(-maximum(N):2:maximum(N), length(N))
-    Ρ_test = Float32(ρ)*rand32(length(N))
-    Θ_test = Float32(θ)*rand32(length(N))
+    Ρ_test = Float32(1.5)*rand32(length(N))
+    Θ_test = Float32(2π)*rand32(length(N))
     X_test = vcat(N_test', M_test', Ρ_test', Θ_test')
     Y_test = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
         zernikerec(h, i, j, k) |> Float32
