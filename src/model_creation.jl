@@ -12,6 +12,9 @@ function modelcreate(n_in::Int, n_out::Int, model_name::String)
         Dense(1024 => 1024, relu),
         Dense(1024 => 1024, relu),
         Dense(1024 => 1024, relu),
+        Dense(1024 => 1024, relu),
+        Dense(1024 => 1024, relu),
+        Dense(1024 => 1024, relu),
         Dense(1024 => n_out)
     )
     BSON.@save model_name*".bson" model
