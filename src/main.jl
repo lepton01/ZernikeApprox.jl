@@ -14,11 +14,11 @@ Compute the Kroenecker delta δ(m, 0) return `1` if m = 0, `0` if m ≠ 0.
 Kδ0(m::Int) = m == zero(m) ? one(m) : zero(m)
 
 """
-    zernike_first_cart(n::Int, m::Int, x, y)
+    zernikecart(n::Int, m::Int, x, y)
 
 Compute the explicit Zernike polynomials for a given order of n at (x, y).
 """
-function zernike_first_cart(n::Int, m::Int, x::Real, y::Real)
+function zernikecart(n::Int, m::Int, x::Real, y::Real)
     @assert abs(m) ≤ n "m ∉ [-n, n]."
     @assert mod(n - abs(m), 2) ≠ 0.0 "n - abs(m) should be an even number."
     #@assert √(x^2 + y^2) ≤ one(x) "Outside the unit circle."
@@ -37,11 +37,11 @@ function zernike_first_cart(n::Int, m::Int, x::Real, y::Real)
 end
 
 """
-    zernike_pol(n, m, ρ, θ)
+    zernikepol(n, m, ρ, θ)
 
 Compute the explicit Zernike polynomials for a given order of n at (ρ, θ).
 """
-function zernike_pol(n::Int, m::Int, ρ::Real, θ::Real)
+function zernikepol(n::Int, m::Int, ρ::Real, θ::Real)
     #@assert ρ ≤ one(ρ) "ρ must be ≤ 1."
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."
@@ -59,14 +59,12 @@ function zernike_pol(n::Int, m::Int, ρ::Real, θ::Real)
 end
 
 """
-    zernike_rec(n, m, ρ, θ)
+    zernikerec(n, m, ρ, θ)
 
 Compute the recurrent Zernike polynomials up to the given order. First compute the recurrent coefficient relations, then evaluate at ρ.
 """
-function zernike_rec(n::Int, m::Int, ρ::Real, θ::Real)
-    #@assert ρ ≤ one(ρ) "ρ must be ≤ 1."
+function zernikerec(n::Int, m::Int, ρ::Real, θ::Real, DF::Table)
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
-    #@assert zero(m) ≤ m && m ≤ n "m ∉ [0, n]."
     @assert iseven(n - abs(m)) "n - abs(m) should be an even number."
 
     if ρ > one(ρ)

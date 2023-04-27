@@ -1,7 +1,7 @@
 module ZernikeApprox
-export zernike_pol, zernike_rec
-export model_create, model_train!, model_train_CPU!
-export zernike_approx, zernike_approx_GPU
+export zernikerec
+export modelcreate, modeltrain!, modeltrainCPU!
+export zernikeapprox, zernikeapproxGPU
 include("deps.jl")
 include("main.jl")
 include("radial.jl")
