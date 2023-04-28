@@ -19,7 +19,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
     @assert Θ isa Vector "a must be of type Vector for training."
     @assert length(N) == length(M) && length(Ρ) == length(Θ) && length(Ρ) == length(M) "All vectors supplied must have the same length."
 
-    Y_train = map(N, M, Ρ, Θ) do h, i, j, k
+    Y_train::Vector{Float32} = map(N, M, Ρ, Θ) do h, i, j, k
         zernikerec(h, i, j, k) |> Float32
     end
     X_train = vcat(N', M', Ρ', Θ')
@@ -27,7 +27,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
     BSON.@load model_name*".bson" model
     model = model |> gpu
     opt = Flux.setup(Flux.Adam(), model)
-    loss_log = Float32[]
+    #loss_log = Float32[]
     for i in 1:ep
         losses = Float32[]
         for data in train_SET
@@ -40,7 +40,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
             Flux.update!(opt, model, grads[1])
         end
         l2 = sum(losses)
-        push!(loss_log, l2)
+        #push!(loss_log, l2)
         if ep > 2_000
             if rem(i, 500) == 0
                 println("Epoch = $i. Training loss = $l2")
@@ -54,19 +54,19 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
         # Stop training when some criterion is reached
         acc = mean(isapprox.(model(X_train), Y_train'; atol = 0.05))
         if acc > 0.95
-            println("stopping after $epoch epochs.")
+            println("Stopped after $epoch epochs.")
             break
         end
         =#
     end
-    N_test = rand(0:maximum(N), length(N))
-    M_test = [rand(-q:2:q) for q in N_test]
-    Ρ_test = Float32(1.5)*rand32(length(N))
-    Θ_test = Float32(2π)*rand32(length(N))
-    X_test = vcat(N_test', M_test', Ρ_test', Θ_test')
-    Y_test = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
+    N_test::Vector{Int} = rand(0:maximum(N), length(N))
+    M_test::Vector{Int} = [rand(-q:2:q) for q in N_test]
+    Ρ_test::Vector{Float32} = Float32(1.5)*rand32(length(N))
+    Θ_test::Vector{Float32} = Float32(2π)*rand32(length(N))
+    Y_test::Vector{Float32} = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
         zernikerec(h, i, j, k) |> Float32
     end
+    X_test::Array{Real, 2} = vcat(N_test', M_test', Ρ_test', Θ_test')
     Y_hat::Array{Float32} = model(X_test |> gpu) |> cpu
     model = model |> cpu
     BSON.@save model_name*".bson" model
@@ -76,14 +76,14 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::F
     BSON.@load model_name*".bson" model
     model = model |> gpu
     opt = Flux.setup(Flux.Adam(), model)
-    loss_log = Float32[]
+    #loss_log = Float32[]
     for i in 1:ep
         losses = Float32[]
-        n_train = rand(0:n, num_L)
-        m_train = [rand(-q:2:q) for q in n_train]
-        ρ_train = Float32(1.5)*rand32(num_L)
-        θ_train = Float32(2π)*rand32(num_L)
-        Y_train = map(n_train, m_train, ρ_train, θ_train) do ii, iii, iiii, iiiii
+        n_train::Vector{Int} = rand(0:n, num_L)
+        m_train::Vector{Int} = [rand(-q:2:q) for q in n_train]
+        ρ_train::Vector{Float32} = Float32(1.5)*rand32(num_L)
+        θ_train::Vector{Float32} = Float32(2π)*rand32(num_L)
+        Y_train::Vector{Float32} = map(n_train, m_train, ρ_train, θ_train) do ii, iii, iiii, iiiii
             zernikerec(ii, iii, iiii, iiiii) |> Float32
         end
         X_train = vcat(n_train', m_train', ρ_train', θ_train')
@@ -97,8 +97,8 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::F
             push!(losses, l)
             Flux.update!(opt, model, grads[1])
         end
-        l2 = sum(losses)
-        push!(loss_log, l2)
+        l2::Float32 = sum(losses)
+        #push!(loss_log, l2)
         if ep > 2_000
             if rem(i, 500) == 0
                 println("Epoch = $i. Training loss = $l2")
@@ -112,19 +112,19 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::F
         # Stop training when some criterion is reached
         acc = mean(isapprox.(model(X_train), Y_train'; atol = 0.05))
         if acc > 0.95
-            println("stopping after $epoch epochs.")
+            println("Stopped after $epoch epochs.")
             break
         end
         =#
     end
-    n_test = rand(0:n, num_L)
-    m_test = [rand(-q:2:q) for q in n_test]
-    ρ_test = Float32(1.5)*rand32(num_L)
-    θ_test = Float32(2π)*rand32(num_L)
-    X_test = vcat(n_test', m_test', ρ_test', θ_test')
-    Y_test = map(n_test, m_test, ρ_test, θ_test) do h, i, j, k
+    n_test::Vector{Int} = rand(0:n, num_L)
+    m_test::Vector{Int} = [rand(-q:2:q) for q in n_test]
+    ρ_test::Vector{Float32} = Float32(1.5)*rand32(num_L)
+    θ_test::Vector{Float32} = Float32(2π)*rand32(num_L)
+    Y_test::Vector{Float32} = map(n_test, m_test, ρ_test, θ_test) do h, i, j, k
         zernikerec(h, i, j, k) |> Float32
     end
+    X_test::Array{Real, 2} = vcat(n_test', m_test', ρ_test', θ_test')
     Y_hat::AbstractArray = model(X_test |> gpu) |> cpu
     model = model |> cpu
     BSON.@save model_name*".bson" model
