@@ -12,7 +12,7 @@ generated to train.
 
 `ep` is the number of epochs to train for.
 """
-function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector, Θ::Vector, model_name::String, ep::Int = 5_000)
+function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Vector{Float64}, model_name::String, ep::Int = 5_000)::Float32
     @assert N isa Vector "x must be of type Vector for training."
     @assert M isa Vector "x must be of type Vector for training."
     @assert Ρ isa Vector "x must be of type Vector for training."
@@ -23,7 +23,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector, Θ::Vector, mod
         zernikerec(h, i, j, k) |> Float32
     end
     X_train = vcat(N', M', Ρ', Θ')
-    train_SET = [(X_train, Y_train')] |> gpu
+    train_SET::Array{Tuple} = [(X_train, Y_train')] |> gpu
     BSON.@load model_name*".bson" model
     model = model |> gpu
     opt = Flux.setup(Flux.Adam(), model)
@@ -67,12 +67,12 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector, Θ::Vector, mod
     Y_test = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
         zernikerec(h, i, j, k) |> Float32
     end
-    Y_hat::AbstractArray = model(X_test |> gpu) |> cpu
+    Y_hat::Array{Float32} = model(X_test |> gpu) |> cpu
     model = model |> cpu
     BSON.@save model_name*".bson" model
     return mean(isapprox.(Y_hat', Y_test; atol = 0.015))*100
 end
-function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
+function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::Float32
     BSON.@load model_name*".bson" model
     model = model |> gpu
     opt = Flux.setup(Flux.Adam(), model)
@@ -145,7 +145,7 @@ generated to train.
 
 `ep` is the number of epochs to train for.
 """
-function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat}, Θ::Vector{AbstractFloat}, model_name::String, ep::Int = 5_000)
+function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat}, Θ::Vector{AbstractFloat}, model_name::String, ep::Int = 5_000)::Float32
     @assert N isa Vector "x must be of type Vector for training."
     @assert M isa Vector "x must be of type Vector for training."
     @assert Ρ isa Vector "x must be of type Vector for training."
@@ -197,7 +197,7 @@ function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat
     BSON.@save model_name*".bson" model
     return mean(isapprox.(Y_hat', Y_test; atol = 0.015))*100
 end
-function modeltrainCPU!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
+function modeltrainCPU!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::Float32
     BSON.@load model_name*".bson" model
     opt = Flux.setup(Flux.Adam(), model)
     loss_log = Float32[]
