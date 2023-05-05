@@ -22,7 +22,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
     Y_train::Vector{Float32} = map(N, M, Ρ, Θ) do h, i, j, k
         zernikerec(h, i, j, k) |> Float32
     end
-    X_train = vcat(N', M', Ρ', Θ')
+    X_train::Array{Float32, 2} = vcat(N', M', Ρ', Θ')
     train_SET::Array{Tuple} = [(X_train, Y_train')] |> gpu
     BSON.@load model_name*".bson" model
     model = model |> gpu
@@ -61,13 +61,13 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
     end
     N_test::Vector{Int} = rand(0:maximum(N), length(N))
     M_test::Vector{Int} = [rand(-q:2:q) for q in N_test]
-    Ρ_test::Vector{Float32} = Float32(1.5)*rand32(length(N))
-    Θ_test::Vector{Float32} = Float32(2π)*rand32(length(N))
+    Ρ_test::Vector{Float32} = 1.5*rand(length(N))
+    Θ_test::Vector{Float32} = 2π*rand(length(N))
     Y_test::Vector{Float32} = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
         zernikerec(h, i, j, k) |> Float32
     end
-    X_test::Array{Real, 2} = vcat(N_test', M_test', Ρ_test', Θ_test')
-    Y_hat::Array{Float32} = model(X_test |> gpu) |> cpu
+    X_test::Array{Float32, 2} = vcat(N_test', M_test', Ρ_test', Θ_test')
+    Y_hat::AbstractArray{Float32} = model(X_test |> gpu) |> cpu
     model = model |> cpu
     BSON.@save model_name*".bson" model
     return mean(isapprox.(Y_hat', Y_test; atol = 0.015))*100
@@ -84,10 +84,10 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::F
         ρ_train::Vector{Float32} = Float32(1.5)*rand32(num_L)
         θ_train::Vector{Float32} = Float32(2π)*rand32(num_L)
         Y_train::Vector{Float32} = map(n_train, m_train, ρ_train, θ_train) do ii, iii, iiii, iiiii
-            zernikerec(ii, iii, iiii, iiiii) |> Float32
+            zernikerec(ii, iii, iiii, iiiii)
         end
         X_train = vcat(n_train', m_train', ρ_train', θ_train')
-        train_SET = [(X_train, Y_train')] |> gpu
+        train_SET::Array{Tuple} = [(X_train, Y_train')] |> gpu
         for data in train_SET
             input, label = data
             l, grads = Flux.withgradient(model) do m
@@ -122,10 +122,10 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::F
     ρ_test::Vector{Float32} = Float32(1.5)*rand32(num_L)
     θ_test::Vector{Float32} = Float32(2π)*rand32(num_L)
     Y_test::Vector{Float32} = map(n_test, m_test, ρ_test, θ_test) do h, i, j, k
-        zernikerec(h, i, j, k) |> Float32
+        zernikerec(h, i, j, k)
     end
-    X_test::Array{Real, 2} = vcat(n_test', m_test', ρ_test', θ_test')
-    Y_hat::AbstractArray = model(X_test |> gpu) |> cpu
+    X_test = vcat(n_test', m_test', ρ_test', θ_test')
+    Y_hat::Vector{Float32} = model(X_test |> gpu) |> cpu
     model = model |> cpu
     BSON.@save model_name*".bson" model
     return mean(isapprox.(Y_hat', Y_test; atol = 0.015))*100
