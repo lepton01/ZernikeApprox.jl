@@ -20,7 +20,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
     @assert length(N) == length(M) && length(Ρ) == length(Θ) && length(Ρ) == length(M) "All vectors supplied must have the same length."
 
     Y_train::Vector{Float32} = map(N, M, Ρ, Θ) do h, i, j, k
-        zernikerec(h, i, j, k) |> Float32
+        zernikerec(h, i, j, k)
     end
     X_train::Array{Float32, 2} = vcat(N', M', Ρ', Θ')
     train_SET::Array{Tuple} = [(X_train, Y_train')] |> gpu
@@ -64,7 +64,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
     Ρ_test::Vector{Float32} = 1.5*rand(length(N))
     Θ_test::Vector{Float32} = 2π*rand(length(N))
     Y_test::Vector{Float32} = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
-        zernikerec(h, i, j, k) |> Float32
+        zernikerec(h, i, j, k)
     end
     X_test::Array{Float32, 2} = vcat(N_test', M_test', Ρ_test', Θ_test')
     Y_hat::AbstractArray{Float32} = model(X_test |> gpu) |> cpu
@@ -130,7 +130,6 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::F
     BSON.@save model_name*".bson" model
     return mean(isapprox.(Y_hat', Y_test; atol = 0.015))*100
 end
-
 """
     modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat}, Θ::Vector{AbstractFloat}, model_name::String, ep::Int = 5_000)
     modeltrainCPU!(n::Int, num_L::Int, model_name, ep = 5_000)
@@ -145,17 +144,17 @@ generated to train.
 
 `ep` is the number of epochs to train for.
 """
-function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat}, Θ::Vector{AbstractFloat}, model_name::String, ep::Int = 5_000)::Float32
+function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Vector{Float64}, model_name::String, ep::Int = 5_000)::Float32
     @assert N isa Vector "x must be of type Vector for training."
     @assert M isa Vector "x must be of type Vector for training."
     @assert Ρ isa Vector "x must be of type Vector for training."
     @assert Θ isa Vector "a must be of type Vector for training."
     @assert length(N) == length(M) && length(Ρ) == length(Θ) && length(Ρ) == length(M) "All vectors supplied must have the same length."
 
-    Y_train = map(N, M, Ρ, Θ) do h, i, j, k
-        zernikerec(h, i, j, k) |> Float32
+    Y_train::Vector{Float32} = map(N, M, Ρ, Θ) do h, i, j, k
+        zernikerec(h, i, j, k)
     end
-    X_train = vcat(N', M', Ρ', Θ')
+    X_train = vcat(N', M', Ρ' .|> Float32, Θ' .|> Float32)
     train_SET = [(X_train, Y_train')]
     BSON.@load model_name*".bson" model
     opt = Flux.setup(Flux.Adam(), model)
@@ -186,12 +185,12 @@ function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{AbstractFloat
         =#
     end
     N_test = rand(0:maximum(N), length(N))
-    M_test = rand(-maximum(N):2:maximum(N), length(N))
-    Ρ_test = Float32(1.5)*rand32(length(N))
-    Θ_test = Float32(2π)*rand32(length(N))
+    M_test = [rand(-q:2:q) for q in N_test]
+    Ρ_test::Vector{Float32} = 1.5*rand32(length(N))
+    Θ_test::Vector{Float32} = 2π*rand32(length(N))
     X_test = vcat(N_test', M_test', Ρ_test', Θ_test')
-    Y_test = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
-        zernikerec(h, i, j, k) |> Float32
+    Y_test::Vector{Float32} = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
+        zernikerec(h, i, j, k)
     end
     Y_hat::AbstractArray = model(X_test)
     BSON.@save model_name*".bson" model
@@ -205,12 +204,12 @@ function modeltrainCPU!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
         losses = Float32[]
         n_train = rand(0:n, num_L)
         m_train = rand(-n:n, num_L)
-        ρ_train = Float32(ρ)*rand32(num_L)
-        θ_train = Float32(θ)*rand32(num_L)
-        Y_train = map(n_train, m_train, ρ_train, θ_train) do h, i, j, k
+        ρ_train::Float32 = ρ*rand32(num_L)
+        θ_train::Float32 = θ*rand32(num_L)
+        Y_train::Vector{Float32} = map(n_train, m_train, ρ_train, θ_train) do h, i, j, k
             zernikerec(h, i, j, k)
         end
-        X_train = vcat(n_train', m_train', ρ_train', θ_train')
+        X_train = vcat(n_train', m_train', ρ_train' .|> Float32, θ_train' .|> Float32)
         train_SET = [(X_train, Y_train')]
         for data in train_SET
             input, label = data
@@ -237,13 +236,13 @@ function modeltrainCPU!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
     end
     n_test = rand(0:n, num_L)
     m_test = rand(-n:2:n, num_L)
-    ρ_test = Float32(ρ)*rand32(num_L)
-    θ_test = Float32(θ)*rand32(num_L)
+    ρ_test::Float32 = ρ*rand32(num_L)
+    θ_test::Float32 = θ*rand32(num_L)
     X_test = vcat(n_test', m_test', ρ_test', θ_test')
-    Y_test = map(n_test, m_test, ρ_test, θ_test) do h, i, j, k
+    Y_test::Vector{Float32} = map(n_test, m_test, ρ_test, θ_test) do h, i, j, k
         zernikerec(h, i, j, k)
     end
-    Y_hat::AbstractArray = model(X_test)
+    Y_hat::AbstractArray{Float32} = model(X_test)
     BSON.@save model_name*".bson" model
     return mean(isapprox.(Y_hat', Y_test; atol = 0.015))*100
 end

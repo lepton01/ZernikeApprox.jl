@@ -11,7 +11,7 @@ function zernikeapprox(n::Int, m::Int, r::AbstractFloat, th::AbstractFloat, mode
     X = Array{Float32}(undef, (4, 1))
     X[:, 1] = Float32[n, m, r, th]
     out::Float32 = model(X)[end]
-    return out, out - zernikerec(n, m, r, th)
+    return out, out - Float32(zernikerec(n, m, r, th))
 end
 #@time appx11 = bessel_approx(2.5, 0., s)
 #@code_warntype bessel_approx(x_test, a_test, s)
@@ -31,7 +31,7 @@ function zernikeapproxGPU(n::Int, m::Int, r::AbstractFloat, th::AbstractFloat, m
     X[:, 1] = Float32[n, m, r, th]
     v = model(X |> gpu) |> cpu
     out::Float32 = v[end]
-    return out, out - zernikerec(n, m, r, th)
+    return out, out - Float32(zernikerec(n, m, r, th))
 end
 #@time appx12 = bessel_approx_gpu(x_test, a_test, s)
 #@code_warntype bessel_approx_gpu(x_test, a_test, s)

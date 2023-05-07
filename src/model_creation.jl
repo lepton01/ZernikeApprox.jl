@@ -8,9 +8,9 @@ Do not add `.bson` to the string input.
 function modelcreate(n_in::Int, n_out::Int, model_name::String)
     model::Chain = Chain(
         BatchNorm(n_in),
-        Dense(n_in => 4096, relu),
-        Dense(4096 => 4096, relu),
-        Dense(4096 => n_out)
+        Dense(n_in => 512, relu),
+        Dense(512 => 512, relu),
+        Dense(512 => n_out)
     )
     BSON.@save model_name*".bson" model
     return
