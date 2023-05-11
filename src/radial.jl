@@ -12,7 +12,7 @@ function radial(n::Int, m::Int, r::Real)
     μ = n - abs(m)
     if iseven(μ)
         for k in 0:Int(μ/2)
-            v = (-1)^k*r^(n - 2k)*factorial(big(n - k))/(factorial(big(k))*factorial(big(Int((n - m)/2) - k))*factorial(big(Int((n + m)/2) - k)))
+            v = (-1)^k*r^(n - 2k)*factorial(big(n - k))/(factorial(big(k))*factorial(big(Int(0.5(n - m)) - k))*factorial(big(Int(0.5(n + m)) - k)))
             push!(N, v)
         end
     else

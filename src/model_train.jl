@@ -61,7 +61,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
     end
     N_test::Vector{Int} = rand(0:maximum(N), length(N))
     M_test::Vector{Int} = [rand(-q:2:q) for q in N_test]
-    Ρ_test::Vector{Float32} = 1.5*rand(length(N))
+    Ρ_test::Vector{Float32} = 1.1*rand(length(N))
     Θ_test::Vector{Float32} = 2π*rand(length(N))
     Y_test::Vector{Float32} = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
         zernikerec(h, i, j, k)
@@ -81,8 +81,8 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::F
         losses = Float32[]
         n_train::Vector{Int} = rand(0:n, num_L)
         m_train::Vector{Int} = [rand(-q:2:q) for q in n_train]
-        ρ_train::Vector{Float32} = Float32(1.5)*rand32(num_L)
-        θ_train::Vector{Float32} = Float32(2π)*rand32(num_L)
+        ρ_train::Vector{Float32} = 1.1*rand32(num_L)
+        θ_train::Vector{Float32} = 2π*rand32(num_L)
         Y_train::Vector{Float32} = map(n_train, m_train, ρ_train, θ_train) do ii, iii, iiii, iiiii
             zernikerec(ii, iii, iiii, iiiii)
         end
@@ -119,8 +119,8 @@ function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::F
     end
     n_test::Vector{Int} = rand(0:n, num_L)
     m_test::Vector{Int} = [rand(-q:2:q) for q in n_test]
-    ρ_test::Vector{Float32} = Float32(1.5)*rand32(num_L)
-    θ_test::Vector{Float32} = Float32(2π)*rand32(num_L)
+    ρ_test::Vector{Float32} = 1.1*rand32(num_L)
+    θ_test::Vector{Float32} = 2π*rand32(num_L)
     Y_test::Vector{Float32} = map(n_test, m_test, ρ_test, θ_test) do h, i, j, k
         zernikerec(h, i, j, k)
     end
@@ -186,7 +186,7 @@ function modeltrainCPU!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ:
     end
     N_test = rand(0:maximum(N), length(N))
     M_test = [rand(-q:2:q) for q in N_test]
-    Ρ_test::Vector{Float32} = 1.5*rand32(length(N))
+    Ρ_test::Vector{Float32} = 1.1*rand32(length(N))
     Θ_test::Vector{Float32} = 2π*rand32(length(N))
     X_test = vcat(N_test', M_test', Ρ_test', Θ_test')
     Y_test::Vector{Float32} = map(N_test, M_test, Ρ_test, Θ_test) do h, i, j, k
@@ -204,8 +204,8 @@ function modeltrainCPU!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
         losses = Float32[]
         n_train = rand(0:n, num_L)
         m_train = rand(-n:n, num_L)
-        ρ_train::Float32 = ρ*rand32(num_L)
-        θ_train::Float32 = θ*rand32(num_L)
+        ρ_train::Float32 = 1.1*rand32(num_L)
+        θ_train::Float32 = 2π*rand32(num_L)
         Y_train::Vector{Float32} = map(n_train, m_train, ρ_train, θ_train) do h, i, j, k
             zernikerec(h, i, j, k)
         end
@@ -236,8 +236,8 @@ function modeltrainCPU!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)
     end
     n_test = rand(0:n, num_L)
     m_test = rand(-n:2:n, num_L)
-    ρ_test::Float32 = ρ*rand32(num_L)
-    θ_test::Float32 = θ*rand32(num_L)
+    ρ_test::Float32 = 1.1*rand32(num_L)
+    θ_test::Float32 = 2π*rand32(num_L)
     X_test = vcat(n_test', m_test', ρ_test', θ_test')
     Y_test::Vector{Float32} = map(n_test, m_test, ρ_test, θ_test) do h, i, j, k
         zernikerec(h, i, j, k)

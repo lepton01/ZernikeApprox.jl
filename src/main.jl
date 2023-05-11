@@ -9,7 +9,7 @@ norma(n::Int, m::Int) = √(2(n + one(n))/(one(n) + Kδ0(m)))
 """
     Kδ0(m::Int)
 
-Compute the Kroenecker delta δ(m, 0) return `1` if m = 0, `0` if m ≠ 0.
+Compute the Kroenecker delta δ(m, 0) return `1` if m = 0, `0` if m ≠ 0. The value returned is `oftype(m)`.
 """
 Kδ0(m::Int) = m == zero(m) ? one(m) : zero(m)
 

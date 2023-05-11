@@ -1,3 +1,3 @@
 using LinearAlgebra, Statistics, Random
-using Flux, BSON
+using Flux, BSON, ZernikePolynomials
 using Flux: mae

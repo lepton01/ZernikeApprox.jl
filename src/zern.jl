@@ -1,8 +1,8 @@
 #03/05/2023
 function zmat(IM::AbstractArray, ind::Array{Int})
     dims_IM = size(IM)
-    x = collect(LinRange(-1, 1, dims_IM[2]))
-    y = collect(LinRange(1, -1, dims_IM[1]))
+    x = LinRange(-1, 1, dims_IM[2])
+    y = LinRange(1, -1, dims_IM[1])
     mat = Array{Float64}(undef, (dims_IM[1], dims_IM[2], size(ind, 1)))
     for ii in axes(ind, 1)
         mat[:, :, ii] = @. zernikecartrec(ind[ii, 1], ind[ii, 2], x', y)
@@ -39,8 +39,17 @@ function zernrecreation(IM::AbstractArray, ind::Array{Int}, d_ind::AbstractVecto
     end
     return recr
 end
+#=
 function cart2pol(x::Real, y::Real)
     r = sqrt(x^2 + y^2)
     th = atan(y, x)
     return r, th
 end
+=#
+#=
+function A(n, m)
+    a = (n+1)/π
+    s1 = []
+    s2 = []
+end
+=#
