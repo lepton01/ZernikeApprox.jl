@@ -2,7 +2,7 @@
 """
     radial(n::Int, m::Int, r::Real)
 
-Compute the radial function of the Zernike polynomials in explicit form.
+Compute the radial function of the Zernike polynomials in explicit factorial form.
 """
 function radial(n::Int, m::Int, r::Real)
     r == 1 && return one(r)

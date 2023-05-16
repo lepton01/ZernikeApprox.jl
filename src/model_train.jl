@@ -72,7 +72,7 @@ function modeltrain!(N::Vector{Int}, M::Vector{Int}, Ρ::Vector{Float64}, Θ::Ve
     BSON.@save model_name*".bson" model
     return mean(isapprox.(Y_hat', Y_test; atol = 0.015))*100
 end
-function modeltrain!(n::Int, num_L::Int, model_name::String, ep::Int = 5_000)::Float32
+function modeltrain!(n::Integer, num_L::Integer, model_name::String, ep::Int = 5_000)::Float32
     BSON.@load model_name*".bson" model
     model = model |> gpu
     opt = Flux.setup(Flux.Adam(), model)

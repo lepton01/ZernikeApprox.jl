@@ -39,17 +39,3 @@ function zernrecreation(IM::AbstractArray, ind::Array{Int}, d_ind::AbstractVecto
     end
     return recr
 end
-#=
-function cart2pol(x::Real, y::Real)
-    r = sqrt(x^2 + y^2)
-    th = atan(y, x)
-    return r, th
-end
-=#
-#=
-function A(n, m)
-    a = (n+1)/π
-    s1 = []
-    s2 = []
-end
-=#
