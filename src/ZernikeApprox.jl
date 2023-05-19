@@ -1,6 +1,6 @@
 module ZernikeApprox
 export zernikerec, zernikepol, zernikecartrec
-export modelcreate, modeltrain!, modeltrainCPU!
+export modeltrain!, modeltrainCPU!
 export zernikeapprox, zernikeapproxGPU
 include("deps.jl")
 include("main.jl")
@@ -11,4 +11,4 @@ include("model_train.jl")
 include("train2.jl")
 include("zern.jl")
 #MODEL_NAME::String = "model_0"
-end
+end # module

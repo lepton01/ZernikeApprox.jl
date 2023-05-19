@@ -1,5 +1,4 @@
 function prep(M::AbstractArray)
-
     r = Flux.flatten(M)
     return r
 end
@@ -8,12 +7,13 @@ end
 
 Train the `name` model to extract the Zernike coefficients and return the percentage of succesful testset approximation.
 """
-function coefftrain!(DATA_train, DATA_test, ind, model_name::String, ep::Integer = 5_000)::Float32
-    X_train = prep(DATA_train)
-
-    Y_train::Vector{Vector} = [Zernikecoefficients(DATA_train[:, :, ii], ind) for ii in 1:axes(DATA_train, 3)]
+function coefftrain!(DATA_train, DATA_test, model_name::String, ep::Integer = 5_000)::Float32
+    X_train = Flux.flatten(DATA_train[1])
+    Y_train = DATA_train[2]
+    X_test = Flux.flatten(DATA_test[1])
+    Y_test = DATA_test[2]
     #X_train::Array{Float32, 2} = IMr
-    train_SET::Array{Tuple} = [(X_train, Y_train')] |> gpu
+    train_SET = [(X_train, Y_train)] |> gpu
     BSON.@load model_name*".bson" model
     model = model |> gpu
     opt = Flux.setup(Flux.Adam(), model)
@@ -49,11 +49,9 @@ function coefftrain!(DATA_train, DATA_test, ind, model_name::String, ep::Integer
         end
         =#
     end
-    X_test = prep(DATA_test)
-    Y_test::Vector{Vector} = [Zernikecoefficients(DATA_test[:, :, ii], ind) for ii in 1:axes(DATA_test, 3)]
     #X_test::Array{Float32, 2} = vcat(N_test', M_test', Ρ_test', Θ_test')
-    Y_hat::AbstractArray{Float32} = model(X_test |> gpu) |> cpu
+    Y_hat = model(X_test |> gpu) |> cpu
     model = model |> cpu
     BSON.@save model_name*".bson" model
-    return mean(isapprox.(Y_hat', Y_test; atol = 0.015))*100
+    return mean(isapprox.(Y_hat, Y_test; atol = 0.015))*100
 end
