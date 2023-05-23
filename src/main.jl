@@ -38,7 +38,7 @@ end
 
 Compute the explicit Zernike polynomials for a given order of n at (x, y).
 """
-function zernikecartrec(n::Int, m::Int, x::Real, y::Real)
+function zernikecartrec(m::Int, n::Int, x::Real, y::Real)
     r = √(x^2 + y^2)
     th = atan(y, x)
     return zernikerec(n, m, r, th)
@@ -63,4 +63,22 @@ function zernikerec(n::Int, m::Int, ρ::Real, θ::Real)
     C = recursive(n, abs(m), n)
     R = [ρ^i for i in 0:n]
     return norma(n, m)*ang_f*(C'*R)
+end
+
+"""
+    evaluateZernike(N::Int, J::Vector{Int}, coefficients::Vector{<:AbstractFloat}; index=:OSA)
+
+Evaluate the Zernike polynomials on an N-by-N grid as specified by the Zernike coefficients of the polynomials J
+
+# Example:
+```julia-repl
+julia> W = evaluateZernike(64, [5, 6], [0.3, 4.1])
+```
+"""
+function evalzern(N::Int, J::Vector{Int}, coefficients::Vector{<:AbstractFloat}; index=:OSA)
+    X = range(-1., 1, N)
+    Y = range(-1., 1, N)
+
+    D = [[zernikecartrec(OSA2mn(j)..., x, y) for x in X, y in Y] for j in J]
+    return reduce(+, map(*, D, coefficients))
 end
