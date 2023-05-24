@@ -4,7 +4,7 @@
 
 Compute the corresponding normalization factor for the Zernike polynomials.
 """
-norma(n::Int, m::Int) = √(2(n + one(n))/(one(n) + Kδ0(m)))
+norma(n::Int, m::Int) = √(2(n + one(n)) / (one(n) + Kδ0(m)))
 
 """
     Kδ0(m::Int)
@@ -25,12 +25,12 @@ function zernikepol(n::Int, m::Int, ρ::Real, θ::Real)
     if ρ > one(ρ)
         return zero(ρ)
     end
-    ang_f = m ≥ zero(m) ? cos(m*θ) : -sin(m*θ)
+    ang_f = m ≥ zero(m) ? cos(m * θ) : -sin(m * θ)
     if n == zero(n) && m == zero(m)
-        return ang_f*norma(n, m)*one(ρ)
+        return ang_f * norma(n, m) * one(ρ)
     end
     rad_f = radial(n, m, ρ)
-    return norma(n, m)*ang_f*rad_f
+    return norma(n, m) * ang_f * rad_f
 end
 
 """
@@ -38,10 +38,10 @@ end
 
 Compute the explicit Zernike polynomials for a given order of n at (x, y).
 """
-function zernikecartrec(m::Int, n::Int, x::Real, y::Real)
+function zernikecart(m::Int, n::Int, x::Real, y::Real; rec::Bool=true)
     r = √(x^2 + y^2)
     th = atan(y, x)
-    return zernikerec(n, m, r, th)
+    rec == true ? zernikerec(n, m, r, th) : zernikepol(n, m, r, th)
 end
 
 """
@@ -56,17 +56,17 @@ function zernikerec(n::Int, m::Int, ρ::Real, θ::Real)
     if ρ > one(ρ)
         return zero(ρ)
     end
-    ang_f = m ≥ zero(m) ? cos(m*θ) : -sin(m*θ)
+    ang_f = m ≥ zero(m) ? cos(m * θ) : -sin(m * θ)
     if ρ == one(ρ)
-        return norma(n, m)*ang_f*one(ρ)
+        return norma(n, m) * ang_f * one(ρ)
     end
     C = recursive(n, abs(m), n)
     R = [ρ^i for i in 0:n]
-    return norma(n, m)*ang_f*(C'*R)
+    return norma(n, m) * ang_f * (C' * R)
 end
 
 """
-    evaluateZernike(N::Int, J::Vector{Int}, coefficients::Vector{<:AbstractFloat}; index=:OSA)
+    evaluateZernike(N::Int, J::Vector{Int}, C::Vector{<:AbstractFloat})
 
 Evaluate the Zernike polynomials on an N-by-N grid as specified by the Zernike coefficients of the polynomials J
 
@@ -75,10 +75,10 @@ Evaluate the Zernike polynomials on an N-by-N grid as specified by the Zernike c
 julia> W = evaluateZernike(64, [5, 6], [0.3, 4.1])
 ```
 """
-function evalzern(N::Int, J::Vector{Int}, coefficients::Vector{<:AbstractFloat}; index=:OSA)
-    X = range(-1., 1, N)
-    Y = range(-1., 1, N)
+function evalzern(N::Int, J::Vector{Int}, C::Vector{<:AbstractFloat})
+    X = range(-1.0, 1, N)
+    Y = range(-1.0, 1, N)
 
     D = [[zernikecartrec(OSA2mn(j)..., x, y) for x in X, y in Y] for j in J]
-    return reduce(+, map(*, D, coefficients))
+    return reduce(+, map(*, D, C))
 end

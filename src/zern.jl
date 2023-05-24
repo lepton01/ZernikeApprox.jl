@@ -12,9 +12,9 @@ end
 function zmoment(IM::AbstractArray, ind::Array{Int})
     dims_IM = size(IM)
     z_mat = zmat(IM, ind)
-    z_reshape = Array{Float64}(undef, (dims_IM[2]*dims_IM[1], size(ind, 1)))
+    z_reshape = Array{Float64}(undef, (dims_IM[2] * dims_IM[1], size(ind, 1)))
     for ii in axes(ind, 1)
-        z_reshape[:, ii] = reshape(z_mat[:, :, ii], dims_IM[2]*dims_IM[1], :)
+        z_reshape[:, ii] = reshape(z_mat[:, :, ii], dims_IM[2] * dims_IM[1], :)
     end
     for ii in eachindex(IM)
         if isnan(IM[ii])
@@ -26,8 +26,8 @@ function zmoment(IM::AbstractArray, ind::Array{Int})
             z_reshape[ii] = 0
         end
     end
-    IM_reshape = reshape(IM, dims_IM[1]*dims_IM[2], :)
-    return (z_reshape'*z_reshape)^(-1)*(z_reshape'*IM_reshape)
+    IM_reshape = reshape(IM, dims_IM[1] * dims_IM[2], :)
+    return (z_reshape' * z_reshape)^(-1) * (z_reshape' * IM_reshape)
 end
 function zernrecreation(IM::AbstractArray, ind::Array{Int}, d_ind::AbstractVector)
     dimsIM = size(IM)
@@ -35,7 +35,7 @@ function zernrecreation(IM::AbstractArray, ind::Array{Int}, d_ind::AbstractVecto
     a_c = zmoment(IM, ind)
     recr = zeros(Float64, (dimsIM[1], dimsIM[2]))
     for ii in eachindex(d_ind)
-        recr = recr + a_c[d_ind[ii]].*z_mats[:, :, d_ind[ii]]
+        recr = recr + a_c[d_ind[ii]] .* z_mats[:, :, d_ind[ii]]
     end
     return recr
 end

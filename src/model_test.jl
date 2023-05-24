@@ -7,7 +7,7 @@ Approximates the first kind Bessel function centered at ``a`` given ``x``. `mode
 Do not include the .bson suffix in `model_name`, as the function already appends it.
 """
 function zernikeapprox(n::Int, m::Int, r::Real, th::Real, model_name::String)::Tuple
-    BSON.@load model_name*".bson" model
+    BSON.@load model_name * ".bson" model
     X = Array{Float32}(undef, (4, 1))
     X[:, 1] = Float32[n, m, r, th]
     out::Float32 = model(X)[end]
@@ -25,7 +25,7 @@ Uses CUDA to compute on the GPU.
 Do not include the .bson suffix, as the function already appends it.
 """
 function zernikeapproxGPU(n::Int, m::Int, r::Real, th::Real, model_name::String)::Tuple
-    BSON.@load model_name*".bson" model
+    BSON.@load model_name * ".bson" model
     model = model |> gpu
     X = Array{Float32}(undef, (4, 1))
     X[:, 1] = Float32[n, m, r, th]

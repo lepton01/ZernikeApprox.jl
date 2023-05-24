@@ -11,8 +11,8 @@ function radial(n::Int, m::Int, r::Real)
     N = typeof(r)[]
     μ = n - abs(m)
     if iseven(μ)
-        for k in 0:Int(μ/2)
-            v = (-1)^k*r^(n - 2k)*factorial(big(n - k))/(factorial(big(k))*factorial(big(Int(0.5(n - m)) - k))*factorial(big(Int(0.5(n + m)) - k)))
+        for k in 0:Int(μ / 2)
+            v = (-1)^k * r^(n - 2k) * factorial(big(n - k)) / (factorial(big(k)) * factorial(big(Int(0.5(n - m)) - k)) * factorial(big(Int(0.5(n + m)) - k)))
             push!(N, v)
         end
     else
@@ -25,7 +25,7 @@ function radial_2(n::Int, m::Int, r::Real)
     r == 1 && return one(r)
     N = typeof(r)[]
     for k in 0:n
-        v = (-1)^(n - k)*r^k*factorial(m + n + k)/(factorial(k)*factorial((m + k)*factorial((n - k))))
+        v = (-1)^(n - k) * r^k * factorial(m + n + k) / (factorial(k) * factorial((m + k) * factorial((n - k))))
         push!(N, v)
     end
     s = sum(N)
@@ -45,7 +45,7 @@ function recursive(n::Int, m::Int, n_max::Int)
     elseif n < m
         return V
     elseif n == m
-        V[m + 1] += one(m)
+        V[m+1] += one(m)
         return V
     end
 

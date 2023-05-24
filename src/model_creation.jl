@@ -12,6 +12,6 @@ function modelcreate(n_in::Int, n_out::Int, model_name::String)
         Dense(512 => 512, relu),
         Dense(512 => n_out)
     )
-    BSON.@save model_name*".bson" model
+    BSON.@save model_name * ".bson" model
     return
 end
