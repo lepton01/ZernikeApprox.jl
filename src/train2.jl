@@ -8,9 +8,9 @@ end
 Train the `name` model to extract the Zernike coefficients and return the percentage of succesful testset approximation.
 """
 function coefftrain!(DATA_train, DATA_test, model_name::String, ep::Integer=5_000)::Float32
-    X_train = Flux.flatten(DATA_train[1])
+    X_train = DATA_train[1] |> Flux.flatten
     Y_train = DATA_train[2]
-    X_test = Flux.flatten(DATA_test[1])
+    X_test = DATA_test[1]  |> Flux.flatten
     Y_test = DATA_test[2]
     #X_train::Array{Float32, 2} = IMr
     train_SET = [(X_train, Y_train)] |> gpu

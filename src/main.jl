@@ -60,7 +60,7 @@ function zernikerec(n::Int, m::Int, ρ::Real, θ::Real)
     if ρ == one(ρ)
         return norma(n, m) * ang_f * one(ρ)
     end
-    C = recursive(n, abs(m), n)
+    C = recursive(n, m |> abs, n)
     R = [ρ^i for i in 0:n]
     return norma(n, m) * ang_f * (C' * R)
 end
