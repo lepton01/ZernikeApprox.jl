@@ -7,7 +7,7 @@ bat is `Bool` for optio of using batching data ingestion (faster training) and b
 """
 function coefftrain!(DATA_train, model_name::String; ep::Integer=100, bs=2)
     X_train, Y_train = DATA_train
-    CUDA.@time train_SET = Flux.DataLoader((X_train, Y_train) |> gpu, batchsize=bs, parallel=true, shuffle=true)
+    train_SET = Flux.DataLoader((X_train, Y_train) |> gpu, batchsize=bs, parallel=true, shuffle=true)
     BSON.@load model_name * ".bson" model
     model = model |> gpu
     opt = Optimisers.setup(Optimisers.Adam(), model)
