@@ -1,3 +1,4 @@
 using LinearAlgebra, Statistics, Random
-using Flux, BSON, ZernikePolynomials, CUDA, Optimisers, ProgressMeter
+using Flux, BSON, CUDA, Optimisers, ProgressMeter
 using Flux: mae, mse
+using ZernikePolynomials: OSA2mn

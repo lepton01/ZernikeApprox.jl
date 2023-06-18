@@ -3,28 +3,26 @@
 
 Train the `name` model to extract the Zernike coefficients and return the percentage of succesful testset approximation.
 
-bat is `Bool` for optio of using batching data ingestion (faster training) and bs is `Int` for batch size.
+bat is `Bool` for optio of using batching data ingestion (faster training) and ``bs`` is `Int` for batch size.
 """
-function coefftrain!(DATA_train, model_name::String; ep::Integer=100, bs=2)
-    X_train, Y_train = DATA_train
-    train_SET = Flux.DataLoader((X_train, Y_train) |> gpu, batchsize=bs, parallel=true, shuffle=true)
-    BSON.@load model_name * ".bson" model
+function coefftrain!(DATA_train, name::String; ep::Int=100, bs::Int=2)
+    train_SET = Flux.DataLoader(DATA_train |> gpu, batchsize=bs, parallel=true, shuffle=true)
+    BSON.@load name * ".bson" model
     model = model |> gpu
     opt = Optimisers.setup(Optimisers.Adam(), model)
-    #loss_log = Float32[]
+    loss_log = Float32[]
     @showprogress 1 "Training..." for i in 1:ep::Int
-        losses = Float32[]
-        for data in train_SET
-            input, label = data
-            l, grads = Flux.withgradient(model) do m
+        l1 = Float32[]
+        for (input, label) in train_SET
+            loss, grads = Flux.withgradient(model) do m
                 result = m(input)
                 mae(result, label)
             end
-            push!(losses, l)
+            push!(l1, loss)
             Flux.update!(opt, model, grads[1])
         end
-        l2 = sum(losses)
-        #push!(loss_log, l2)
+        l2 = sum(l1)
+        push!(loss_log, l2)
         if ep > 2_000
             if rem(i, 500) == 0
                 println("Epoch = $i. Training loss = $l2")
@@ -46,9 +44,9 @@ function coefftrain!(DATA_train, model_name::String; ep::Integer=100, bs=2)
     #Y_hat1 = model(X_train |> gpu) |> cpu
     #Y_hat2 = model(X_test |> gpu) |> cpu
     model = model |> cpu
-    BSON.@save model_name * ".bson" model
+    BSON.@save name * ".bson" model
     CUDA.reclaim()
-    return#accuracy(DATA_train, DATA_test, model_name)
+    return loss_log
 end
 function accuracygpu(A, B, name)
     BSON.@load name * ".bson" model

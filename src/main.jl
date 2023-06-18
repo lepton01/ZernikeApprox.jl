@@ -22,9 +22,7 @@ function zernikepol(n::Int, m::Int, ρ::Real, θ::Real)
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     @assert iseven(n - abs(m)) "n - abs(m) should be an even number."
 
-    if ρ > one(ρ)
-        return zero(ρ)
-    end
+    ρ > one(ρ) && return zero(ρ)
     ang_f = m ≥ zero(m) ? cos(m * θ) : -sin(m * θ)
     if n == zero(n) && m == zero(m)
         return ang_f * norma(n, m) * one(ρ)
@@ -45,11 +43,11 @@ function zernikecart(m::Int, n::Int, x::Real, y::Real; rec::Bool=true)
 end
 
 """
-    zernikerec(n, m, ρ, θ)
+    zernikerec(m, n, ρ, θ)
 
 Compute the recurrent Zernike polynomials up to the given order. First compute the recurrent coefficient relations, then evaluate at ρ.
 """
-function zernikerec(n::Int, m::Int, ρ::Real, θ::Real)
+function zernikerec(m::Int, n::Int, ρ::Real, θ::Real)
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
     @assert iseven(n - abs(m)) "n - abs(m) should be an even number."
 
@@ -76,9 +74,10 @@ julia> W = evaluateZernike(64, [5, 6], [0.3, 4.1])
 ```
 """
 function evalzern(N::Int, J::Vector{Int}, C::Vector{<:AbstractFloat})
-    X = range(-1.0, 1, N)
-    Y = range(-1.0, 1, N)
-
-    D = [[zernikecartrec(OSA2mn(j)..., x, y) for x in X, y in Y] for j in J]
-    return reduce(+, map(*, D, C))
+    X = range(-1, 1, N)
+    A = Array{ComplexF64,3}(undef, (N, N, length(J)))
+    for ii in J
+        A[:, :, ii] = [zernikecart(OSA2mn(ii)..., x, y, rec=false) * (C[ii] + im * (C[ii] + length(C))) for x in X, y in X]
+    end
+    return reduce(+, A, dims=3)[:, :]
 end
