@@ -1,12 +1,12 @@
 """
-    coefftrain!(train_data, name; ep=100, bs=2)
+    coefftrain!(, name; ep=100, bs=2)
 
 Train the `name` model to extract the Zernike coefficients and return the percentage of succesful testset approximation.
 
 bat is `Bool` for optio of using batching data ingestion (faster training) and ``bs`` is `Int` for batch size.
 """
-function coefftrain!(DATA_train, name::String; ep::Int=100, bs::Int=2)
-    train_SET = Flux.DataLoader(DATA_train |> gpu, batchsize=bs, parallel=true, shuffle=true)
+function coefftrain!(DATA, name; ep::Int=100, bs::Int=2)
+    train_SET = Flux.DataLoader(DATA |> gpu, batchsize=bs, parallel=true, shuffle=true)
     BSON.@load name * ".bson" model
     model = model |> gpu
     opt = Optimisers.setup(Optimisers.Adam(), model)
