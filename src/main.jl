@@ -32,9 +32,9 @@ function zernikepol(n::Int, m::Int, ρ::Real, θ::Real)
 end
 
 """
-    zernikecart(n::Int, m::Int, x, y)
+    zernikecart(n::Int, m::Int, x, y; rec=true)
 
-Compute the explicit Zernike polynomials for a given order of n at (x, y).
+Compute the Zernike polynomials for a given order of n at (x, y). ``rec`` is a bool indicating the use of the recursive algorithm.
 """
 function zernikecart(m::Int, n::Int, x::Real, y::Real; rec::Bool=true)
     r = √(x^2 + y^2)
@@ -45,7 +45,7 @@ end
 """
     zernikerec(m, n, ρ, θ)
 
-Compute the recurrent Zernike polynomials up to the given order. First compute the recurrent coefficient relations, then evaluate at ρ.
+Compute the recurrent Zernike polynomials up to the given order.
 """
 function zernikerec(m::Int, n::Int, ρ::Real, θ::Real)
     @assert ρ ≥ zero(ρ) "ρ must be ≥ 0."
@@ -64,14 +64,9 @@ function zernikerec(m::Int, n::Int, ρ::Real, θ::Real)
 end
 
 """
-    evaluateZernike(N::Int, J::Vector{Int}, C::Vector{<:AbstractFloat})
+    evalzern(N::Int, J::Vector{Int}, C::Vector{<:AbstractFloat})
 
-Evaluate the Zernike polynomials on an N-by-N grid as specified by the Zernike coefficients of the polynomials J
-
-# Example:
-```julia-repl
-julia> W = evaluateZernike(64, [5, 6], [0.3, 4.1])
-```
+Evaluate the Zernike polynomials on an N-by-N grid as specified by the Zernike coefficients of the polynomials J. Mod of the ZernikePolynomials.jl package's function ``evaluateZernike``.
 """
 function evalzern(N::Int, J::Vector{Int}, C::Vector{<:AbstractFloat})
     X = range(-1, 1, N)

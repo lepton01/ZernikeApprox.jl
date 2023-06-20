@@ -9,5 +9,4 @@ include("model_creation.jl")
 include("model_test.jl")
 include("model_train.jl")
 include("train2.jl")
-include("zern.jl")
 end# end module

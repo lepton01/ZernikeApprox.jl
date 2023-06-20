@@ -1,7 +1,7 @@
 """
-    coefftrain!(, name; ep=100, bs=2)
+    coefftrain!(DATA::Tuple, name; ep=100, bs=2)
 
-Train the `name` model to extract the Zernike coefficients and return the percentage of succesful testset approximation.
+Train the `name` model with the DATA tuple of X and Y to extract the Zernike coefficients and return the cost function progression through training.
 
 bat is `Bool` for optio of using batching data ingestion (faster training) and ``bs`` is `Int` for batch size.
 """
